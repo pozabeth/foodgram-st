@@ -121,7 +121,7 @@ Foodgram — это онлайн-платформа, где пользовате
 ## Образ Docker Hub
 
 Образ бэкенда доступен на Docker Hub:
-[https://hub.docker.com/r/pozabeth/foodgram_backend](https://hub.docker.com/r/pozabeth/foodgram_backend)
+[https://hub.docker.com/r/pozabeth/foodgram_backend](https://hub.docker.com/r/pozabeth/foodgram-backend)
 
 ## Автор
 
