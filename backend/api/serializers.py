@@ -4,10 +4,10 @@ from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
 
 from recipes.models import (
-    MAX_INGREDIENT_AMOUNT,
-    MIN_INGREDIENT_AMOUNT,
     MAX_COOKING_TIME,
+    MAX_INGREDIENT_AMOUNT,
     MIN_COOKING_TIME,
+    MIN_INGREDIENT_AMOUNT,
     Ingredient,
     Recipe,
     RecipeIngredientLink,

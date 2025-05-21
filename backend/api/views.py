@@ -21,19 +21,19 @@ from recipes.models import (
     RecipeIngredientLink,
     ShoppingListEntry,
 )
-from users.models import UserSubscription, User
+from users.models import User, UserSubscription
 
 from .filters import IngredientSearchFilter, RecipeCustomFilter
 from .permissions import IsOwnerOrReadOnly
 from .serializers import (
     AvatarResponseSerializer,
     AvatarUpdateSerializer,
-    UserSerializer,
     IngredientSerializer,
     RecipeDetailSerializer,
     RecipeShortSerializer,
     RecipeWriteSerializer,
     SubscriptionOutputSerializer,
+    UserSerializer,
 )
 
 
