@@ -98,7 +98,7 @@ Foodgram — это онлайн-платформа, где пользовате
         ```bash
         docker compose -f infra/docker-compose.yml exec backend python manage.py createsuperuser
         ```
-    *   Загрузка ингредиентов в базу данных:
+    *   Загрузка данных:
         ```bash
         docker compose -f infra/docker-compose.yml exec backend python manage.py loaddata data/ingredients.json
         docker compose -f infra/docker-compose.yml exec backend python manage.py loaddata data/users.json
