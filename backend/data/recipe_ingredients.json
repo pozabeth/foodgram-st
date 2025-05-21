@@ -1,0 +1,74 @@
+[
+{
+  "model": "recipes.recipeingredientlink",
+  "pk": 1,
+  "fields": {
+    "recipe": 1,
+    "ingredient": 2,
+    "amount": 112
+  }
+},
+{
+  "model": "recipes.recipeingredientlink",
+  "pk": 2,
+  "fields": {
+    "recipe": 2,
+    "ingredient": 21,
+    "amount": 10
+  }
+},
+{
+  "model": "recipes.recipeingredientlink",
+  "pk": 3,
+  "fields": {
+    "recipe": 3,
+    "ingredient": 97,
+    "amount": 200
+  }
+},
+{
+  "model": "recipes.recipeingredientlink",
+  "pk": 4,
+  "fields": {
+    "recipe": 4,
+    "ingredient": 1817,
+    "amount": 50
+  }
+},
+{
+  "model": "recipes.recipeingredientlink",
+  "pk": 5,
+  "fields": {
+    "recipe": 5,
+    "ingredient": 1566,
+    "amount": 2
+  }
+},
+{
+  "model": "recipes.recipeingredientlink",
+  "pk": 6,
+  "fields": {
+    "recipe": 6,
+    "ingredient": 1120,
+    "amount": 1000
+  }
+},
+{
+  "model": "recipes.recipeingredientlink",
+  "pk": 7,
+  "fields": {
+    "recipe": 7,
+    "ingredient": 1355,
+    "amount": 100
+  }
+},
+{
+  "model": "recipes.recipeingredientlink",
+  "pk": 8,
+  "fields": {
+    "recipe": 8,
+    "ingredient": 1786,
+    "amount": 10
+  }
+}
+]

@@ -1,0 +1,29 @@
+[
+{
+  "model": "users.usersubscription",
+  "pk": 1,
+  "fields": {
+    "user": 2,
+    "author": 1,
+    "created": "2025-05-21T18:26:26.273Z"
+  }
+},
+{
+  "model": "users.usersubscription",
+  "pk": 2,
+  "fields": {
+    "user": 3,
+    "author": 2,
+    "created": "2025-05-21T18:29:56.710Z"
+  }
+},
+{
+  "model": "users.usersubscription",
+  "pk": 3,
+  "fields": {
+    "user": 3,
+    "author": 1,
+    "created": "2025-05-21T18:29:59.817Z"
+  }
+}
+]

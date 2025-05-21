@@ -1,17 +1,71 @@
-version: '3.3'
+# infra/docker-compose.yml
+version: '3.8'  # Используем версию формата, поддерживающую условия в depends_on
+
+volumes:
+  postgres_data:  # Хранилище для данных PostgreSQL
+  static_value:   # Объём для хранения статических файлов Django (CSS, JS, изображения)
+  media_value:    # Объём для загружаемых пользователем медиафайлов
+
 services:
 
-  frontend:
-    container_name: foodgram-front
-    build: ../frontend
+  db:  # Контейнер СУБД PostgreSQL
+    image: postgres:14-alpine  # Лёгкая версия PostgreSQL 14 на базе Alpine Linux
+    container_name: foodgram-db
     volumes:
-      - ../frontend/:/app/result_build/
-  nginx:
-    container_name: foodgram-proxy
+      - postgres_data:/var/lib/postgresql/data/  # Подключаем хранилище данных БД
+    environment:  # Переменные окружения для запуска контейнера
+      POSTGRES_DB: ${POSTGRES_DB}  # Имя БД берётся из переменной окружения или .env
+      POSTGRES_USER: ${POSTGRES_USER}  # Имя пользователя БД
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}  # Пароль пользователя
+    healthcheck:  # Проверка готовности сервиса к работе
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]  # Тестовая команда с экранированием $
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:  # Сервис бэкенд-приложения на Django
+    build:
+      context: ../
+      dockerfile: backend/Dockerfile
+    container_name: foodgram-backend
+    restart: always  # Перезапускать при падении или перезагрузке
+    volumes:
+      - static_value:/app/staticfiles/  # Монтирование статики
+      - media_value:/app/media/  # Монтирование медиафайлов
+    depends_on:  # Зависимости сервиса
+      db:
+        condition: service_healthy  # Ждём, пока БД станет доступной
+    env_file:
+      - ../backend/.env  # Подключаем конфигурационные переменные среды
+    command: >  # Команда запуска
+      sh -c "python manage.py collectstatic --noinput &&
+             python manage.py migrate &&
+             gunicorn foodgram.wsgi:application --bind 0:8000"
+
+  frontend:  # Сервис сборки фронтенда
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile
+    container_name: foodgram-frontend-builder
+    volumes:
+      - ../frontend/:/app/result_build/  # Пробрасываем директорию фронтенда внутрь контейнера
+
+  nginx:  # Веб-сервер Nginx
     image: nginx:1.25.4-alpine
+    container_name: foodgram-proxy
     ports:
-      - "80:80"
+      - "80:80"  # Открываем порт 80 на хосте
     volumes:
+      # Конфигурация веб-сервера
       - ./nginx.conf:/etc/nginx/conf.d/default.conf
+      # Статика фронтенда (собирается в контейнере frontend)
       - ../frontend/build:/usr/share/nginx/html/
+      # Документация API (генерируется автоматически)
       - ../docs/:/usr/share/nginx/html/api/docs/
+      # Статические файлы Django
+      - static_value:/var/html/staticfiles/
+      # Медиафайлы от пользователей
+      - media_value:/var/html/media/
+    depends_on:
+      - backend  # Указываем, что Nginx должен запуститься после backend
+      # - frontend  # Фронтенд не обязателен для старта Nginx

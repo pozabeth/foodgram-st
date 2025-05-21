@@ -1,0 +1,98 @@
+[
+{
+  "model": "recipes.recipe",
+  "pk": 1,
+  "fields": {
+    "author": 1,
+    "name": "Рецепт 1",
+    "image": "recipes/images/7f4f9d52-6470-4511-8791-6d79166a4697.jpg",
+    "text": "Есть прямо из банки",
+    "cooking_time": 12,
+    "pub_date": "2025-05-21T18:22:42.124Z"
+  }
+},
+{
+  "model": "recipes.recipe",
+  "pk": 2,
+  "fields": {
+    "author": 1,
+    "name": "Рецепт 2",
+    "image": "recipes/images/3d2c9ca4-132f-48c8-aabc-42f7bc0e5f4d.jpg",
+    "text": "Делать то что с этим обычно делают",
+    "cooking_time": 11,
+    "pub_date": "2025-05-21T18:23:48.806Z"
+  }
+},
+{
+  "model": "recipes.recipe",
+  "pk": 3,
+  "fields": {
+    "author": 1,
+    "name": "Рецепт 3",
+    "image": "recipes/images/0069f616-05d4-4e0d-941d-75c303700b09.jpg",
+    "text": "Очистить и съесть",
+    "cooking_time": 1,
+    "pub_date": "2025-05-21T18:24:31.430Z"
+  }
+},
+{
+  "model": "recipes.recipe",
+  "pk": 4,
+  "fields": {
+    "author": 2,
+    "name": "Рецепт 4",
+    "image": "recipes/images/9a50171f-33b2-454e-9e34-99641a9f43bb.jpg",
+    "text": "Ух какая вещь!",
+    "cooking_time": 5,
+    "pub_date": "2025-05-21T18:26:03.159Z"
+  }
+},
+{
+  "model": "recipes.recipe",
+  "pk": 5,
+  "fields": {
+    "author": 2,
+    "name": "Рецепт 5",
+    "image": "recipes/images/7c43fe49-5c6c-400b-ab4a-3e0dadaea6ba.jpg",
+    "text": "С солью главное не переборщить",
+    "cooking_time": 100,
+    "pub_date": "2025-05-21T18:27:07.890Z"
+  }
+},
+{
+  "model": "recipes.recipe",
+  "pk": 6,
+  "fields": {
+    "author": 2,
+    "name": "Рецепт 6",
+    "image": "recipes/images/04f3e27a-f358-4423-a448-b2dcab4f8d4f.jpg",
+    "text": "Перебери, тщательно промой и всыпь облепиху в кастрюлю. Добавь воду и провари 5 минут. Измельчи мягкие ягоды погружным блендером, а затем протри через сито. Добавь 1,8 кг сахара и провари варенье на медленном огне 5 минут. Всыпь лимонную кислоту и пектин, смешанный с оставшимся сахаром. Провари еще 3-4 минуты, разложи по банкам и закатай.",
+    "cooking_time": 30,
+    "pub_date": "2025-05-21T18:29:04.709Z"
+  }
+},
+{
+  "model": "recipes.recipe",
+  "pk": 7,
+  "fields": {
+    "author": 3,
+    "name": "Рецепт 7",
+    "image": "recipes/images/fb363e2c-4db9-47b0-a845-6115dcbb2bb1.webp",
+    "text": "Пакет в микроволновку и ждать взрыва",
+    "cooking_time": 10,
+    "pub_date": "2025-05-21T18:31:01.183Z"
+  }
+},
+{
+  "model": "recipes.recipe",
+  "pk": 8,
+  "fields": {
+    "author": 3,
+    "name": "Рецепт 8",
+    "image": "recipes/images/fb9672b9-7d2c-4080-a722-101f272ac6d4.webp",
+    "text": "Чисто попробовать",
+    "cooking_time": 2,
+    "pub_date": "2025-05-21T18:31:36.849Z"
+  }
+}
+]
