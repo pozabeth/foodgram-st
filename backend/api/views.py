@@ -21,7 +21,7 @@ from recipes.models import (
     RecipeIngredientLink,
     ShoppingListEntry,
 )
-from users.models import User, UserSubscription
+from users.models import User
 
 from .filters import IngredientSearchFilter, RecipeCustomFilter
 from .permissions import IsOwnerOrReadOnly
