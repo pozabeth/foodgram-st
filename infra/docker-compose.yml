@@ -28,6 +28,7 @@ services:
       context: ../
       dockerfile: backend/Dockerfile
     container_name: foodgram-backend
+    image: pozabeth/foodgram-backend:latest
     restart: always  # Перезапускать при падении или перезагрузке
     volumes:
       - static_value:/app/staticfiles/  # Монтирование статики

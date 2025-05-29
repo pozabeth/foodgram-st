@@ -4,7 +4,12 @@ from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django_filters.rest_framework import DjangoFilterBackend
 from djoser.views import UserViewSet as DjoserUserViewSet
-from rest_framework import filters as drf_filters, status, viewsets
+from rest_framework import (
+    filters as drf_filters,
+    serializers,
+    status,
+    viewsets,
+)
 from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import (
@@ -33,17 +38,18 @@ from .serializers import (
     RecipeShortSerializer,
     RecipeWriteSerializer,
     SubscriptionOutputSerializer,
+    SubscriptionSerializer,
     UserSerializer,
 )
 
 
-class IngredientDataViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Ingredient.objects.all()
+class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Ingredient.objects.all().order_by('name')
     serializer_class = IngredientSerializer
     permission_classes = [AllowAny]
-    filter_backends = [DjangoFilterBackend]
-    filterset_class = IngredientSearchFilter
     pagination_class = None
+    filter_backends = (DjangoFilterBackend,)
+    filterset_class = IngredientSearchFilter
 
 
 class CustomPaginator(PageNumberPagination):
@@ -78,41 +84,35 @@ class CustomUserManagerViewSet(DjoserUserViewSet):
         permission_classes=[IsAuthenticated],
     )
     def subscribe(self, request, id=None):
-        if not id:
-            return Response(
-                {"detail": "ID пользователя не указан."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-        author = get_object_or_404(User, id=id)
-        user = request.user
-        if user == author:
-            return Response(
-                {"errors": "Нельзя подписаться на самого себя."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        exists = UserSubscription.objects.filter(user=user,
-                                                 author=author).exists()
+        serializer = SubscriptionSerializer(
+            data={"author_id": id},
+            context={"request": request}
+        )
 
         if request.method == "POST":
-            if exists:
-                return Response(
-                    {"errors": "Вы уже подписаны на этого пользователя."},
-                    status=status.HTTP_400_BAD_REQUEST,
+            try:
+                serializer.is_valid(raise_exception=True)
+                serializer.save()
+                output_serializer = SubscriptionOutputSerializer(
+                    serializer.validated_data["author"],
+                    context={"request": request}
                 )
-            UserSubscription.objects.create(user=user, author=author)
-            serializer = SubscriptionOutputSerializer(
-                author, context={"request": request}
-            )
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+                return Response(output_serializer.data,
+                                status=status.HTTP_201_CREATED)
+            except serializers.ValidationError as e:
+                return Response(e.detail, status=status.HTTP_400_BAD_REQUEST)
 
         elif request.method == "DELETE":
+            author = get_object_or_404(User, id=id)
+            exists = request.user.follower.filter(author=author).exists()
+
             if not exists:
                 return Response(
                     {"errors": "Вы не были подписаны на этого пользователя."},
                     status=status.HTTP_400_BAD_REQUEST,
                 )
-            UserSubscription.objects.filter(user=user, author=author).delete()
+
+            request.user.follower.filter(author=author).delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(
@@ -281,7 +281,7 @@ class RecipeManagerViewSet(viewsets.ModelViewSet):
                 {"detail": "Ошибка генерации ссылки."},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
-        return Response({"link": full_url}, status=status.HTTP_200_OK)
+        return Response({"short-link": full_url}, status=status.HTTP_200_OK)
 
     def get_queryset(self):
         queryset = super().get_queryset()

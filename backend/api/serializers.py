@@ -1,4 +1,5 @@
 from django.db import transaction
+from django.http import Http404
 from djoser.serializers import UserSerializer as DjoserUserSerializer
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
@@ -12,7 +13,7 @@ from recipes.models import (
     Recipe,
     RecipeIngredientLink,
 )
-from users.models import User
+from users.models import User, UserSubscription
 
 
 class IngredientSerializer(serializers.ModelSerializer):
@@ -124,15 +125,15 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         ingredients = data.get("ingredients")
-        if ingredients:
-            ingredient_ids = [item["id"].id for item in ingredients]
-            if len(ingredient_ids) != len(set(ingredient_ids)):
-                raise serializers.ValidationError(
-                    {"ingredients": "Ингредиенты не должны повторяться."}
-                )
-        else:
+
+        if not ingredients:
             raise serializers.ValidationError(
                 {"ingredients": "Нужно указать хотя бы один ингредиент."}
+            )
+        ingredient_ids = [item["id"].id for item in ingredients]
+        if len(ingredient_ids) != len(set(ingredient_ids)):
+            raise serializers.ValidationError(
+                {"ingredients": "Ингредиенты не должны повторяться."}
             )
 
         if not data.get("image") and not self.instance:
@@ -174,8 +175,13 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
             instance.ingredients.clear()
             self.create_ingredients(instance, ingredients_data)
 
-        if image:
+        if image is not None:
             instance.image = image
+            instance.save(update_fields=["image"])
+        else:
+            raise serializers.ValidationError(
+                {"image": "Поле 'image' обязательно для создания."}
+            )
 
         return super().update(instance, validated_data)
 
@@ -225,3 +231,42 @@ class AvatarUpdateSerializer(serializers.Serializer):
 
 class AvatarResponseSerializer(serializers.Serializer):
     avatar = serializers.ImageField(read_only=True)
+
+
+class SubscriptionSerializer(serializers.Serializer):
+    author_id = serializers.IntegerField(write_only=True)
+
+    def validate_author_id(self, value):
+        try:
+            author = User.objects.get(id=value)
+        except User.DoesNotExist:
+            raise Http404({
+                "author_id": "Пользователь с таким ID не существует."
+            })
+        return author
+
+    def validate(self, data):
+        user = self.context["request"].user
+        author = data.get("author_id")
+        if not author:
+            raise serializers.ValidationError({
+                "author_id": "ID пользователя не указан."
+            })
+        if user == author:
+            raise serializers.ValidationError({
+                "errors": "Нельзя подписаться на самого себя."
+            })
+        if UserSubscription.objects.filter(user=user, author=author).exists():
+            raise serializers.ValidationError({
+                "errors": "Вы уже подписаны на этого пользователя."
+            })
+        return {"author": author}
+
+    def create(self, validated_data):
+        user = self.context["request"].user
+        author = validated_data["author"]
+
+        return UserSubscription.objects.create(
+            user=user,
+            author=author
+        )

@@ -4,11 +4,14 @@ from recipes.models import Ingredient, Recipe
 
 
 class IngredientSearchFilter(filters.FilterSet):
-    title = filters.CharFilter(field_name="name", lookup_expr="istartswith")
+    name = filters.CharFilter(
+        field_name="name",
+        lookup_expr="startswith"
+    )
 
     class Meta:
         model = Ingredient
-        fields = ("title",)
+        fields = ('name',)
 
 
 class RecipeCustomFilter(filters.FilterSet):

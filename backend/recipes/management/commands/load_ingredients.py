@@ -25,8 +25,9 @@ class Command(BaseCommand):
 
             ingredients = []
             for item in data:
-                name = item.get("name")
-                unit = item.get("measurement_unit")
+                fields = item.get("fields", {})
+                name = fields.get("name")
+                unit = fields.get("measurement_unit")
                 if name and unit:
                     ingredients.append(
                         Ingredient(name=name.strip(),
