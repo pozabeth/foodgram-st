@@ -90,17 +90,14 @@ class CustomUserManagerViewSet(DjoserUserViewSet):
         )
 
         if request.method == "POST":
-            try:
-                serializer.is_valid(raise_exception=True)
-                serializer.save()
-                output_serializer = SubscriptionOutputSerializer(
-                    serializer.validated_data["author"],
-                    context={"request": request}
-                )
-                return Response(output_serializer.data,
-                                status=status.HTTP_201_CREATED)
-            except serializers.ValidationError as e:
-                return Response(e.detail, status=status.HTTP_400_BAD_REQUEST)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            output_serializer = SubscriptionOutputSerializer(
+                serializer.validated_data["author"],
+                context={"request": request}
+            )
+            return Response(output_serializer.data,
+                            status=status.HTTP_201_CREATED)
 
         elif request.method == "DELETE":
             author = get_object_or_404(User, id=id)
