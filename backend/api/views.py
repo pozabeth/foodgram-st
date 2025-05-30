@@ -6,7 +6,6 @@ from django_filters.rest_framework import DjangoFilterBackend
 from djoser.views import UserViewSet as DjoserUserViewSet
 from rest_framework import (
     filters as drf_filters,
-    serializers,
     status,
     viewsets,
 )
